@@ -1,0 +1,82 @@
+{
+  "name": "refined-jira",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Annoying Jira",
+  "main": "index.js",
+  "scripts": {
+    "fix": "run-p \"lint:* -- --fix\"",
+    "lint": "run-p lint:* --continue-on-error",
+    "lint:css": "stylelint \"src/**/*.css\"",
+    "lint:js": "xo",
+    "build": "run-p build:* --continue-on-error",
+    "build:typescript": "tsc --noEmit",
+    "build:webpack": "cross-env NODE_OPTIONS=\"--loader tsx\" webpack --mode=production",
+    "watch": "run-p watch:* --continue-on-error",
+    "watch:typescript": "tsc --noEmit --watch --preserveWatchOutput",
+    "watch:webpack": "cross-env NODE_OPTIONS=\"--loader tsx\" webpack --mode=development --watch"
+  },
+  "author": "134130",
+  "license": "MIT",
+  "stylelint": {
+    "extends": "stylelint-config-xo",
+    "rules": {
+      "selector-type-no-unknown": null,
+      "declaration-no-important": null,
+      "selector-class-pattern": null,
+      "selector-id-pattern": null,
+      "selector-max-universal": null,
+      "no-descending-specificity": null
+    },
+    "overrides": [
+      {
+        "files": [
+          "src/jira-extension.css"
+        ],
+        "rules": {
+          "no-descending-specificity": null
+        }
+      }
+    ]
+  },
+  "dependencies": {
+    "@primer/octicons-react": "^17.5.0",
+    "delay": "^6.0.0",
+    "delegate-it": "^6.0.1",
+    "dom-chef": "5.1.0",
+    "dom-loaded": "^3.0.0",
+    "doma": "^3.0.2",
+    "npm-run-all": "^4.1.5",
+    "onetime": "^6.0.0",
+    "react": "^17.0.2",
+    "select-dom": "^7.1.1",
+    "webextension-polyfill-global": "^0.10.1-1"
+  },
+  "devDependencies": {
+    "@sindresorhus/tsconfig": "^3.0.1",
+    "@types/chrome": "^0.0.236",
+    "@types/jsdom": "^21.1.1",
+    "@types/react": "^17.0.52",
+    "@types/webextension-polyfill": "^0.10.0",
+    "copy-webpack-plugin": "^11.0.0",
+    "cross-env": "^7.0.3",
+    "css-loader": "^6.7.3",
+    "esbuild-loader": "^3.0.0",
+    "eslint-config-xo-react": "^0.27.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "jsdom": "^21.1.0",
+    "mini-css-extract-plugin": "^2.7.2",
+    "size-plugin": "^2.0.2",
+    "stylelint": "^15.0.0",
+    "stylelint-config-xo": "^0.21.1",
+    "terser-webpack-plugin": "^5.3.6",
+    "tsx": "^3.12.7",
+    "type-fest": "^3.5.7",
+    "typed-query-selector": "^2.9.1",
+    "typescript": "^4.9.5",
+    "webpack": "^5.83.1",
+    "webpack-cli": "^5.1.1",
+    "xo": "^0.54.2"
+  }
+}

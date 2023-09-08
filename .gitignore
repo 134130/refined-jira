@@ -1,0 +1,10 @@
+# Nodejs
+node_modules/
+lib/
+dist/
+
+# MACOS
+.DS_Store
+
+# Jetbrains
+.idea/

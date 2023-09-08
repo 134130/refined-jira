@@ -1,0 +1,15 @@
+{
+  "name": "Jira Extension",
+  "version": "1.0.0",
+  "description": "Annoying Jira",
+  "manifest_version": 3,
+  "permissions":[
+
+  ],
+  "content_scripts": [{
+    "matches": ["https://*.atlassian.net/jira*"],
+    "run_at": "document_end",
+    "js": ["assets/refined-jira.js"],
+    "css": ["assets/refined-jira.css"]
+  }]
+}
