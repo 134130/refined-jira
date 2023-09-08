@@ -31,7 +31,7 @@
     "overrides": [
       {
         "files": [
-          "src/jira-extension.css"
+          "src/refined-jira.css"
         ],
         "rules": {
           "no-descending-specificity": null
