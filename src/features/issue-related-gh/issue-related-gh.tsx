@@ -45,14 +45,15 @@ async function add(issueRow: HTMLDivElement) {
 		switch (details.prState) {
 			case "OPEN":
 				tagContainer.prepend(
-					<span className='aui-lozenge ghx-label ghx-label-single ghx-purple'>
+					<span className='aui-lozenge ghx-label ghx-label-single ghx-green'>
 						<GitPullRequestIcon/> {details.prCount}
 					</span>
+
 				)
 				break
 			case "MERGED":
 				tagContainer.prepend(
-					<span className='aui-lozenge ghx-label ghx-label-single ghx-green'>
+					<span className='aui-lozenge ghx-label ghx-label-single ghx-purple'>
 						<GitMergeIcon/> {details.prCount}
 					</span>
 				)
