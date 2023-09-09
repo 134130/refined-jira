@@ -5,6 +5,7 @@ import pageDetect from '../../helpers/page-detect';
 import select from "select-dom";
 import {parseDOM} from '../../helpers/parse-dom';
 import {GitBranchIcon, GitMergeIcon, GitPullRequestIcon} from "@primer/octicons-react";
+import {fetchJSON} from "../../helpers/fetch-util";
 
 type PrState = 'OPEN' | 'MERGED'
 
@@ -13,8 +14,7 @@ type IssueDevDetails = {
 }
 
 async function getIssueDevDetails(issueKey: String): Promise<IssueDevDetails> {
-	const response = await fetch(`/rest/greenhopper/1.0/xboard/issue/details.json?rapidViewId=100&issueIdOrKey=${issueKey}`)
-	const data = await response.json()
+	const data = await fetchJSON(`/rest/greenhopper/1.0/xboard/issue/details.json?rapidViewId=100&issueIdOrKey=${issueKey}`)
 
 	const tabs  = data.tabs.defaultTabs as any[]
 	const thirdPartyTabSections = tabs.find(tab => tab.tabId == 'THIRD_PARTY_TAB').sections as any[]

@@ -2,12 +2,11 @@ import features from "../../helpers/feature-manager";
 import pageDetect from "../../helpers/page-detect";
 import observe from "../../helpers/selector-observer";
 import select from "select-dom";
+import {fetchJSON} from "../../helpers/fetch-util";
 
 type IssueStatus = 'new' | 'done' | 'indeterminate'
 async function getIssueStatus(issueKey: String): Promise<IssueStatus> {
-	const response = await fetch(`/rest/api/3/issue/${issueKey}`)
-	const data = await response.json()
-
+	const data = await fetchJSON(`/rest/api/3/issue/${issueKey}`)
 	return data.fields.status.statusCategory.key
 }
 
