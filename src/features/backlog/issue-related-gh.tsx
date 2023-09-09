@@ -1,9 +1,9 @@
-import observe from "../../helpers/selector-observer";
+import observe from '../../helpers/selector-observer';
 import React from "dom-chef";
-import features from "../../helpers/feature-manager";
-import pageDetect from "../../helpers/page-detect";
+import features from '../../helpers/feature-manager';
+import pageDetect from '../../helpers/page-detect';
 import select from "select-dom";
-import {parseDOM} from "../../helpers/parse-dom";
+import {parseDOM} from '../../helpers/parse-dom';
 import {GitBranchIcon, GitMergeIcon, GitPullRequestIcon} from "@primer/octicons-react";
 
 type PrState = 'OPEN' | 'MERGED'
@@ -19,6 +19,7 @@ async function getIssueDevDetails(issueKey: String): Promise<IssueDevDetails> {
 	const tabs  = data.tabs.defaultTabs as any[]
 	const thirdPartyTabSections = tabs.find(tab => tab.tabId == 'THIRD_PARTY_TAB').sections as any[]
 	const plainHtml = thirdPartyTabSections.find(section => section.label == '개발').html
+
 	const jsonData = select('.dev-summary.json-blob', parseDOM(plainHtml))!.getAttribute('data-json')!
 	const parsedJson = JSON.parse(jsonData)
 	const {pullrequest, branch} = parsedJson.cachedValue.summary
@@ -31,12 +32,7 @@ async function getIssueDevDetails(issueKey: String): Promise<IssueDevDetails> {
 }
 
 async function add(issueRow: HTMLDivElement) {
-	// issueRow.getAttribute('data-issue-id')
-	const issueKey = issueRow.getAttribute('data-issue-key')
-
-	if (!issueKey) {
-		return
-	}
+	const issueKey = issueRow.getAttribute('data-issue-key')!
 
 	const tagContainer = select('.ghx-items-container', issueRow)!
 	const details = await getIssueDevDetails(issueKey)

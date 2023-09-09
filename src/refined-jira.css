@@ -1,1 +1,4 @@
 /* stylelint-disable */
+.js-issue.ghx-issue-compact:hover .ghx-items-container {
+	background: transparent !important;
+}
