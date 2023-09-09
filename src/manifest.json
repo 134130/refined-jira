@@ -1,7 +1,7 @@
 {
-  "name": "Jira Extension",
+  "name": "Refined JIRA",
   "version": "1.0.0",
-  "description": "Annoying Jira",
+  "description": "Extends your Atlassian JIRA",
   "manifest_version": 3,
   "permissions":[
 
