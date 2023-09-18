@@ -1,7 +1,8 @@
 declare module 'size-plugin';
 
-type DeinitHandle = {disconnect: VoidFunction} | {clear: VoidFunction} | {destroy: VoidFunction} | {abort: VoidFunction} | VoidFunction;
-type Deinit = DeinitHandle | DeinitHandle[];
+type Deinit = {disconnect: VoidFunction} | {clear: VoidFunction} | {destroy: VoidFunction} | {abort: VoidFunction} | VoidFunction;
+
+type FeatureID = string & {feature: true};
 
 declare namespace JSX {
 	type BaseElement = IntrinsicElements['div'];

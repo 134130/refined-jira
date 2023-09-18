@@ -71,8 +71,8 @@ async function add(issueRow: HTMLDivElement) {
 	}
 }
 
-function init(): void {
-	observe('.js-issue', add)
+function init(signal: AbortSignal): void {
+	observe('.js-issue', add, {signal})
 }
 
 void features.add(

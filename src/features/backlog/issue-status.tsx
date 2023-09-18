@@ -25,12 +25,10 @@ async function add(issueRow: HTMLDivElement) {
 			issueRow.parentElement!.append(issueRow)
 			return
 	}
-
-
 }
 
-function init(): void {
-	observe('.js-issue', add)
+function init(signal: AbortSignal): void {
+	observe('.js-issue', add, {signal})
 }
 
 void features.add(

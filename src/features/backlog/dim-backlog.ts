@@ -17,8 +17,8 @@ function dim(fields: HTMLDivElement): void {
 	fields.closest('div.ghx-backlog-card')!.style.opacity = '50%';
 }
 
-function init(): void {
-	observe('div.js-issue.ghx-backlog-card>div.ghx-issue-content div.ghx-plan-extra-fields', dim);
+function init(signal: AbortSignal): void {
+	observe('div.js-issue.ghx-backlog-card>div.ghx-issue-content div.ghx-plan-extra-fields', dim, {signal});
 }
 
 void features.add(

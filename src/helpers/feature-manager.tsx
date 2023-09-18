@@ -2,6 +2,8 @@ import {Promisable} from 'type-fest';
 import domLoaded from 'dom-loaded';
 
 import onAbort from './abort-controller.js';
+import onProgressBar from "../events/on-progress-bar";
+import ArrayMap from "./map-of-arrays";
 
 type BooleanFunction = () => boolean;
 export type CallerFunction = (callback: VoidFunction, signal: AbortSignal) => void | Promise<void> | Deinit;
@@ -30,12 +32,26 @@ type FeatureLoader = {
 	init: FeatureInit; // Repeated here because this interface is Partial<>
 } & Partial<InternalRunConfig>;
 
-function castArray<Item>(value: Item | Item[]): Item[] {
-	return Array.isArray(value) ? value : [value];
+const currentFeatureControllers = new ArrayMap<FeatureID, AbortController>();
+
+function logError(url: string, error: unknown): void {
+	const id = getFeatureID(url);
+	// const message = error instanceof Error ? error.message : String(error);
+
+	// Don't change this to `throw Error` because Firefox doesn't show extensions' errors in the console
+	console.group(`❌ ${id}`); // Safari supports only one parameter
+	console.log(error);
+	console.groupEnd();
 }
 
-function getFeatureID(url: string): string {
-	return url.split('/').pop()!.split('.')[0];
+const log = {
+	info: console.log,
+	http: console.log,
+	error: logError,
+};
+
+function getFeatureID(url: string): FeatureID {
+	return url.split('/').pop()!.split('.')[0] as FeatureID;
 }
 
 function shouldFeatureRun({
@@ -49,7 +65,7 @@ function shouldFeatureRun({
 async function add(url: string, ...loaders: FeatureLoader[]): Promise<void> {
 	const id = getFeatureID(url);
 	for (const loader of loaders) {
-		const {asLongAs, include, exclude, init, awaitDomReady, onlyAdditionalListeners = false, additionalListeners = []} = loader;
+		const {asLongAs, include, exclude, init, onlyAdditionalListeners = false, additionalListeners = []} = loader;
 
 		if (include?.length === 0) {
 			throw new Error('`include` cannot be an empty array, it means "run nowhere"');
@@ -57,18 +73,22 @@ async function add(url: string, ...loaders: FeatureLoader[]): Promise<void> {
 
 		const details = {asLongAs, include, exclude, init, additionalListeners, onlyAdditionalListeners};
 
-		if (awaitDomReady) {
-			(async () => {
-				await domLoaded;
-				await setupPageLoad(id, details);
-			})();
-		} else {
+		// if (awaitDomReady) {
+		// 	(async () => {
+		// 		await domLoaded;
+		// 		await setupPageLoad(id, details);
+		// 	})();
+		// } else {
+		// 	void setupPageLoad(id, details);
+		// }
+
+		onProgressBar(() => {
 			void setupPageLoad(id, details);
-		}
+		})
 	}
 }
 
-async function setupPageLoad(id: string, config: InternalRunConfig): Promise<void> {
+async function setupPageLoad(id: FeatureID, config: InternalRunConfig): Promise<void> {
 	const {asLongAs, include, exclude, init, onlyAdditionalListeners, additionalListeners} = config;
 
 	if (!shouldFeatureRun({asLongAs, include, exclude})) {
@@ -76,6 +96,7 @@ async function setupPageLoad(id: string, config: InternalRunConfig): Promise<voi
 	}
 
 	const featureController = new AbortController();
+	currentFeatureControllers.append(id, featureController)
 
 	const runFeature = async (): Promise<void> => {
 		let result: FeatureInitResult;
@@ -84,14 +105,14 @@ async function setupPageLoad(id: string, config: InternalRunConfig): Promise<voi
 			result = await init(featureController.signal);
 
 			if (result !== false) {
-				console.log('✅', id);
+				log.info('✅', id);
 			}
 		} catch (error) {
-			console.error('❌', id, error);
+			log.error(id, error);
 		}
 
 		if (result) {
-			onAbort(featureController, ...castArray(result));
+			onAbort(featureController, result);
 		}
 	};
 
@@ -103,10 +124,21 @@ async function setupPageLoad(id: string, config: InternalRunConfig): Promise<voi
 	for (const listener of additionalListeners) {
 		const deinit = listener(runFeature, featureController.signal);
 		if (deinit && !(deinit instanceof Promise)) {
-			onAbort(featureController, ...castArray(deinit));
+			onAbort(featureController, deinit);
 		}
 	}
 }
+
+onProgressBar(() => {
+	for(const [id, feature] of currentFeatureControllers.entries()) {
+		console.log(`Aborting ${id}`)
+		for (const controller of feature) {
+			controller.abort();
+		}
+	}
+
+	currentFeatureControllers.clear();
+});
 
 const features = {
 	add,

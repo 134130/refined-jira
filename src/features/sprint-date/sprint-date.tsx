@@ -38,9 +38,9 @@ function add(input: HTMLInputElement): void {
 	input.before(newInput);
 }
 
-function init(): void {
-	observe('input#ghx-sprint-start-date', add);
-	observe('input#ghx-sprint-end-date', add);
+function init(signal: AbortSignal): void {
+	observe('input#ghx-sprint-start-date', add, {signal});
+	observe('input#ghx-sprint-end-date', add, {signal});
 }
 
 void features.add(
